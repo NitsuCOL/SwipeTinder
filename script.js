@@ -34,6 +34,16 @@ function startDrag(event) {
         actualCard.style.transform = `translateX(${pullDeltaX}px) rotate(${deg}deg)`;
         //Cambiar el cursor a grabbing
         actualCard.style.cursor = 'grabbing';
+
+        //Cambiar la opacidad de la informacion escogida
+        const opacity = Math.abs(pullDeltaX) / 100;
+        const isRight = pullDeltaX > 0;
+
+        const cohiceEl = isRight
+            ? actualCard.querySelector('.choice.like')
+            : actualCard.querySelector('.choice.nope')
+
+        cohiceEl.style.opacity = opacity
     }
     
     function onEnd(event) {
@@ -46,10 +56,27 @@ function startDrag(event) {
         //Conocer si el usuario decidio
         const decisionMade = Math.abs(pullDeltaX) >= DECISION_THRESHOLD
         if (decisionMade) {
-            
+            const goRight = pullDeltaX >= 0;
+            const goLeft = !goRight;
+
+            //Añadir la clase de acuerdo a la decision
+            actualCard.classList.add(goRight ? 'go-right' : 'go-left')
+            actualCard.addEventListener('transitionend', () =>{
+                actualCard.remove()
+            }, {once: true});
         }else{
-            
+            actualCard.classList.add('reset')
+            actualCard.classList.remove('go-right', 'go-left')
         }
+
+        //Reiniciar variables
+        actualCard.addEventListener('transitionend', () =>{
+            actualCard.removeAttribute('style');
+            actualCard.classList.remove('reset');
+
+            pullDeltaX = 0;
+            isAnimating = false;
+        });
     }
 }
 
