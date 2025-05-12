@@ -7,6 +7,7 @@ function startDrag(event) {
 
     //Recuperar el primer elemento
     const actualCard = event.target.closest('article');
+    if (!actualCard) return
 
     //Obtener la posicion inicial
     const startX = event.pageX ?? event.touches[0].pageX;
@@ -67,6 +68,9 @@ function startDrag(event) {
         }else{
             actualCard.classList.add('reset')
             actualCard.classList.remove('go-right', 'go-left')
+            actualCard.querySelectorAll('choice').forEach(el => {
+                el.style.opacity = 0
+            })
         }
 
         //Reiniciar variables
